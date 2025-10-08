@@ -1,0 +1,56 @@
+<?php
+
+return [
+    'channels' => [
+        'navigation_label' => 'Channels',
+        'plural_label' => 'Channels',
+        'fields' => [
+            'id' => 'ID',
+            'name' => 'Channel Name',
+            'secret_key' => 'Secret Key',
+            'status' => 'Status',
+            'created_at' => 'Created At',
+        ],
+        'actions' => [
+            'edit' => 'Edit',
+            'delete' => 'Delete',
+            'refresh_key' => 'Generate new key',
+        ],
+        'filters' => [
+            'status' => 'Active?',
+            'active' => 'Active',
+            'inactive' => 'Inactive',
+        ],
+    ],
+    'channel_stats' => [
+        'navigation_label' => 'Channel Stats',
+        'plural_label' => 'Channel Stats List',
+        'fields' => [
+            'id' => 'ID',
+            'channel' => 'Channel',
+            'stat_date' => 'Date',
+            'visit_count' => 'Visits',
+            'ip_count' => 'Unique IPs',
+            'recharge_amount' => 'Recharge (Total)',
+            'success_recharge_amount' => 'Recharge (Success)',
+            'register_count' => 'Registrations',
+            'created_at' => 'Created At',
+        ],
+    ],
+    'recharge_logs' => [
+        'navigation_label' => 'Recharge Logs',
+        'plural_label' => 'Recharge Logs List',
+        'fields' => [
+            'id' => 'ID',
+            'channel' => 'Channel',
+            'amount' => 'Amount',
+            'status' => 'Status',
+            'created_at' => 'Created At',
+        ],
+        'status_labels' => [
+            'pending' => 'Pending',
+            'success' => 'Success',
+            'failed' => 'Failed',
+        ],
+    ],
+];
