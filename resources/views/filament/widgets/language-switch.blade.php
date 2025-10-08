@@ -4,12 +4,12 @@
     @endphp
 
     <a href="{{ route('filament.switch-language', ['lang' => 'en']) }}"
-       class="px-3 py-1 border rounded {{ $current === 'en' ? 'bg-blue-500 text-white' : '' }}">
+       class="px-3 py-1 border rounded {{ $current === 'en' ? 'bg-primary-500 text-white' : '' }}">
        English
     </a>
 
     <a href="{{ route('filament.switch-language', ['lang' => 'zh_CN']) }}"
-       class="px-3 py-1 border rounded {{ $current === 'zh_CN' ? 'bg-blue-500 text-white' : '' }}">
+       class="px-3 py-1 border rounded {{ $current === 'zh_CN' ? 'bg-primary-500 text-white' : '' }}">
        中文
     </a>
 </div>
