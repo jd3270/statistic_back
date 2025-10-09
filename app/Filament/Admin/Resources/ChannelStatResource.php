@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\ChannelStatResource\Pages;
 use App\Models\ChannelStat;
+use App\Models\Channel;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -16,7 +17,6 @@ class ChannelStatResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
     protected static ?string $slug = 'channel-stats';
 
-    // ✅ 导航标签和复数标签使用翻译
     public static function getNavigationLabel(): string
     {
         return __('filament.channel_stats.navigation_label');
@@ -34,7 +34,9 @@ class ChannelStatResource extends Resource
                 Tables\Columns\TextColumn::make('id')
                     ->label(__('filament.channel_stats.fields.id'))
                     ->sortable(),
-                Tables\Columns\TextColumn::make('channel')
+
+                // ✅ 显示频道名称（通过关联）
+                Tables\Columns\TextColumn::make('channel.name')
                     ->label(__('filament.channel_stats.fields.channel'))
                     ->sortable()
                     ->searchable(),
@@ -56,12 +58,12 @@ class ChannelStatResource extends Resource
                     ->dateTime('Y-m-d H:i:s'),
             ])
             ->filters([
-                SelectFilter::make('channel')
+                SelectFilter::make('channel_id')
                     ->label(__('filament.channel_stats.fields.channel'))
-                    ->options(fn () => ChannelStat::query()->distinct()->pluck('channel', 'channel')->toArray()),
+                    ->options(fn () => Channel::pluck('name', 'id')->toArray()),
             ])
-            ->actions([]) // 只读：不显示行操作
-            ->bulkActions([]); // 只读：不显示批量操作
+            ->actions([])
+            ->bulkActions([]);
     }
 
     public static function getPages(): array

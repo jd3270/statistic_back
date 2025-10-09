@@ -8,5 +8,11 @@ class ChannelStat extends Model
 {
     protected $connection = 'statistic';
     protected $table = 'channel_stats';
-    public $timestamps = false;
+    public $timestamps = true;
+
+    public function channel()
+    {
+        return $this->belongsTo(Channel::class, 'channel_id');
+    }
+
 }

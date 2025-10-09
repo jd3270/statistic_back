@@ -34,7 +34,7 @@ class RechargeLogResource extends Resource
                 Tables\Columns\TextColumn::make('id')
                     ->label(__('filament.recharge_logs.fields.id'))
                     ->sortable(),
-                Tables\Columns\TextColumn::make('channel')
+                Tables\Columns\TextColumn::make('channel.name')
                     ->label(__('filament.recharge_logs.fields.channel'))
                     ->sortable()
                     ->searchable(),
@@ -42,33 +42,40 @@ class RechargeLogResource extends Resource
                     ->label(__('filament.recharge_logs.fields.amount')),
                 Tables\Columns\TextColumn::make('status')
                     ->label(__('filament.recharge_logs.fields.status'))
-                    ->formatStateUsing(fn($state) => match ($state) {
-                        'pending' => __('filament.recharge_logs.status_labels.pending'),
-                        'success' => __('filament.recharge_logs.status_labels.success'),
-                        'failed'  => __('filament.recharge_logs.status_labels.failed'),
-                        default   => $state,
+                    ->badge()
+                    ->formatStateUsing(fn($state) => match ((int) $state) {
+                        0 => __('filament.recharge_logs.status_labels.pending'),
+                        1 => __('filament.recharge_logs.status_labels.success'),
+                        2 => __('filament.recharge_logs.status_labels.failed'),
+                        default => 'Unknown',
                     })
-                    ->colors([
-                        'warning' => fn($state) => $state === 'pending',
-                        'success' => fn($state) => $state === 'success',
-                        'danger'  => fn($state) => $state === 'failed',
-                    ]),
+                    ->color(fn($state) => match ((int) $state) {
+                        0 => 'warning',
+                        1 => 'success',
+                        2 => 'danger',
+                        default => 'secondary',
+                    }),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(__('filament.recharge_logs.fields.created_at'))
                     ->dateTime('Y-m-d H:i:s')
                     ->sortable(),
             ])
             ->filters([
+                SelectFilter::make('channel_id')
+                    ->label(__('filament.recharge_logs.fields.channel'))
+                    ->options(
+                        \App\Models\Channel::query()->pluck('name', 'id')->toArray()
+                    ),
                 SelectFilter::make('status')
                     ->label(__('filament.recharge_logs.fields.status'))
                     ->options([
-                        'pending' => __('filament.recharge_logs.status_labels.pending'),
-                        'success' => __('filament.recharge_logs.status_labels.success'),
-                        'failed'  => __('filament.recharge_logs.status_labels.failed'),
+                        0 => __('filament.recharge_logs.status_labels.pending'),
+                        1 => __('filament.recharge_logs.status_labels.success'),
+                        2 => __('filament.recharge_logs.status_labels.failed'),
                     ]),
             ])
-            ->actions([]) // 只读
-            ->bulkActions([]); // 只读
+            ->actions([])
+            ->bulkActions([]);
     }
 
     public static function getPages(): array
