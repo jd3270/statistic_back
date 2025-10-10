@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Channel;
+use Filament\Panel;
 
 class User extends Authenticatable
 {
@@ -48,6 +49,15 @@ class User extends Authenticatable
         }
 
         return $this->channels;
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        if (app()->environment('local')) {
+            return true;
+        }
+
+        return $panel->getId() === 'admin';
     }
 }
 
