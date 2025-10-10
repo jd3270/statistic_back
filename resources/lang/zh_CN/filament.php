@@ -2,11 +2,35 @@
 
 
 return [
+    'users' => [
+        'navigation_label' => '用户管理',
+        'plural_label' => '用户列表',
+        'fields' => [
+            'id' => 'ID',
+            'name' => '姓名',
+            'email' => '邮箱',
+            'password' => '密码',
+            'created_at' => '创建时间',
+        ],
+        'actions' => [
+            'edit' => '编辑',
+            'delete' => '删除',
+            'attach_channel' => '添加渠道',
+        ],
+        'filters' => [
+            // 可以自定义筛选字段
+        ],
+    ],
+    'navigation' => [
+        'statistic' => '统计',
+        'setting' => '设置',
+    ],
     'channels' => [
         'navigation_label' => '渠道',
         'plural_label' => '渠道列表',
         'fields' => [
             'id' => 'ID',
+            'channel_code' => '渠道编码',
             'name' => '渠道名称',
             'secret_key' => '密钥',
             'status' => '状态',
