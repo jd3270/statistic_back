@@ -53,11 +53,12 @@ class User extends Authenticatable
 
     public function canAccessPanel(Panel $panel): bool
     {
+
         if (app()->environment('local')) {
             return true;
         }
 
-        return $panel->getId() === 'admin';
+        return true;
     }
 }
 
