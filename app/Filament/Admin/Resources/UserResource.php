@@ -10,7 +10,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class UserResource extends Resource
 {
@@ -82,9 +82,34 @@ class UserResource extends Resource
         ];
     }
 
-    // 🔹 只显示超级管理员（id=1）
-    public static function getEloquentQuery(): Builder
+ public static function canViewAny(): bool
     {
-        return parent::getEloquentQuery()->where('id', 1);
+        // 只有超级管理员可以看到 UserResource
+        $user = Auth::user();
+        return $user && $user->id === 1;
+    }
+
+    public static function canView($record = null): bool
+    {
+        $user = Auth::user();
+        return $user && $user->id === 1;
+    }
+
+    public static function canCreate(): bool
+    {
+        $user = Auth::user();
+        return $user && $user->id === 1;
+    }
+
+    public static function canEdit($record): bool
+    {
+        $user = Auth::user();
+        return $user && $user->id === 1;
+    }
+
+    public static function canDelete($record): bool
+    {
+        $user = Auth::user();
+        return $user && $user->id === 1;
     }
 }

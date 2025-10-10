@@ -23,6 +23,11 @@ class Channel extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class, 'channel_user', 'channel_id', 'user_id');
+        return $this->belongsToMany(
+            User::class,
+            'statistic_back.channel_user',
+            'channel_id',
+            'user_id'
+        );
     }
 }

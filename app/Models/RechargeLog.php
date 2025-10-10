@@ -15,4 +15,14 @@ class RechargeLog extends Model
         return $this->belongsTo(Channel::class);
     }
 
+    public function users()
+    {
+        return $this->belongsToMany(
+            User::class,
+            'statistic_back.channel_user',
+            'channel_id',
+            'user_id'
+        )->usingDatabase('statistic_back');
+    }
+
 }

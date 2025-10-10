@@ -10,7 +10,6 @@ use App\Models\Channel;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
-
     protected $fillable = [
         'name',
         'email',
@@ -45,8 +44,9 @@ class User extends Authenticatable
     public function availableChannels()
     {
         if ($this->id === 1) {
-            return Channel::all(); // 超级管理员可访问所有
+            return Channel::all();
         }
+
         return $this->channels;
     }
 }

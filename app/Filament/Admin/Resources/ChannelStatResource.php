@@ -9,6 +9,9 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 class ChannelStatResource extends Resource
 {
@@ -34,6 +37,19 @@ class ChannelStatResource extends Resource
 
     public static function table(Table $table): Table
     {
+        $user = Auth::user();
+
+        // Define the base filters array
+        $filters = [];
+
+        // Only show the channel filter for the Super Admin (user ID 1)
+        if ($user && $user->id === 1) {
+            $filters[] = SelectFilter::make('channel_id')
+                ->label(__('filament.channel_stats.fields.channel'))
+                ->relationship('channel', 'name')
+                ->searchable() // Allow searching within the filter options
+                ->preload();    // Load options immediately
+        }
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')
@@ -62,11 +78,7 @@ class ChannelStatResource extends Resource
                     ->label(__('filament.channel_stats.fields.created_at'))
                     ->dateTime('Y-m-d H:i:s'),
             ])
-            ->filters([
-                SelectFilter::make('channel_id')
-                    ->label(__('filament.channel_stats.fields.channel'))
-                    ->options(fn() => Channel::pluck('name', 'id')->toArray()),
-            ])
+            ->filters($filters)
             ->actions([])
             ->bulkActions([]);
     }
@@ -76,5 +88,24 @@ class ChannelStatResource extends Resource
         return [
             'index' => Pages\ListChannelStats::route('/'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        $user = Auth::user();
+
+        // 超级管理员查看所有
+        if ($user && $user->id === 1) {
+            return $query;
+        }
+
+        // 普通用户：通过 join pivot 表（完整库名）来过滤所属 channel
+        return $query
+            ->join('channels', 'channel_stats.channel_id', '=', 'channels.id')
+            ->join('statistic_back.channel_user as cu', 'channels.id', '=', 'cu.channel_id')
+            ->where('cu.user_id', $user->id)
+            ->select('channel_stats.*')
+            ->distinct();
     }
 }
