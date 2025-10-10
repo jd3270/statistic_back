@@ -7,8 +7,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Channel;
 use Filament\Panel;
+use Filament\Models\Contracts\FilamentUser;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     use HasFactory, Notifiable;
     protected $fillable = [
@@ -58,7 +59,7 @@ class User extends Authenticatable
             return true;
         }
 
-        return true;
+        return $panel->getId() === 'admin';
     }
 }
 
