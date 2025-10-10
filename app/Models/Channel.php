@@ -13,10 +13,16 @@ class Channel extends Model
     protected $table = 'channels';
 
     protected $fillable = [
+        'channel_code',
         'name',
         'secret_key',
         'status',
     ];
 
-    public $timestamps = true; 
+    public $timestamps = true;
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'channel_user', 'channel_id', 'user_id');
+    }
 }

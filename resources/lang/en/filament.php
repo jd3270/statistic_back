@@ -1,11 +1,35 @@
 <?php
 
 return [
+    'users' => [
+        'navigation_label' => 'Users',
+        'plural_label' => 'User List',
+        'fields' => [
+            'id' => 'ID',
+            'name' => 'Name',
+            'email' => 'Email',
+            'password' => 'Password',
+            'created_at' => 'Created At',
+        ],
+        'actions' => [
+            'edit' => 'Edit',
+            'delete' => 'Delete',
+            'attach_channel' => 'Attach Channel',
+        ],
+        'filters' => [
+            // Custom filters if needed
+        ],
+    ],
+    'navigation' => [
+        'statistic' => 'Statistic',
+        'setting' => 'Setting',
+    ],
     'channels' => [
         'navigation_label' => 'Channels',
         'plural_label' => 'Channels',
         'fields' => [
             'id' => 'ID',
+            'channel_code' => 'Channel Code',
             'name' => 'Channel Name',
             'secret_key' => 'Secret Key',
             'status' => 'Status',

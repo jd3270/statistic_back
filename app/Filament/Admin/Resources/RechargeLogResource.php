@@ -16,7 +16,10 @@ class RechargeLogResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
     protected static ?string $slug = 'recharge-logs';
 
-    // ✅ 导航标签和复数标签使用翻译
+    public static function getNavigationGroup(): ?string
+    {
+        return __('filament.navigation.statistic');
+    }
     public static function getNavigationLabel(): string
     {
         return __('filament.recharge_logs.navigation_label');

@@ -17,6 +17,11 @@ class ChannelStatResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
     protected static ?string $slug = 'channel-stats';
 
+    public static function getNavigationGroup(): ?string
+    {
+        return __('filament.navigation.statistic');
+    }
+
     public static function getNavigationLabel(): string
     {
         return __('filament.channel_stats.navigation_label');
@@ -60,7 +65,7 @@ class ChannelStatResource extends Resource
             ->filters([
                 SelectFilter::make('channel_id')
                     ->label(__('filament.channel_stats.fields.channel'))
-                    ->options(fn () => Channel::pluck('name', 'id')->toArray()),
+                    ->options(fn() => Channel::pluck('name', 'id')->toArray()),
             ])
             ->actions([])
             ->bulkActions([]);

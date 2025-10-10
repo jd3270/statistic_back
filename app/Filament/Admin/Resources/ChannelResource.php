@@ -17,8 +17,14 @@ class ChannelResource extends Resource
     protected static ?string $navigationGroup = 'Statistic';
     protected static ?string $navigationIcon = 'heroicon-o-folder';
     protected static ?string $slug = 'channels';
+    protected static ?int $navigationSort = 98;
 
-    // ✅ 导航标签使用翻译
+    public static function getNavigationGroup(): ?string
+    {
+        return __('filament.navigation.setting');
+    }
+
+
     public static function getNavigationLabel(): string
     {
         return __('filament.channels.navigation_label');
@@ -32,6 +38,11 @@ class ChannelResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
+            Forms\Components\TextInput::make('channel_code')
+                ->label(__('filament.channels.fields.channel_code'))
+                ->required()
+                ->unique(ignoreRecord: true),
+
             Forms\Components\TextInput::make('name')
                 ->label(__('filament.channels.fields.name'))
                 ->required()
@@ -63,16 +74,25 @@ class ChannelResource extends Resource
                 Tables\Columns\TextColumn::make('id')
                     ->label(__('filament.channels.fields.id'))
                     ->sortable(),
+
+                Tables\Columns\TextColumn::make('channel_code')
+                    ->label(__('filament.channels.fields.channel_code'))
+                    ->sortable()
+                    ->searchable(),
+
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('filament.channels.fields.name'))
                     ->searchable()
                     ->sortable(),
+
                 Tables\Columns\TextColumn::make('secret_key')
                     ->label(__('filament.channels.fields.secret_key'))
                     ->copyable(),
+
                 Tables\Columns\IconColumn::make('status')
                     ->label(__('filament.channels.fields.status'))
                     ->boolean(),
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(__('filament.channels.fields.created_at'))
                     ->dateTime('Y-m-d H:i:s')
@@ -98,9 +118,9 @@ class ChannelResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => Pages\ListChannels::route('/'),
+            'index' => Pages\ListChannels::route('/'),
             'create' => Pages\CreateChannel::route('/create'),
-            'edit'   => Pages\EditChannel::route('/{record}/edit'),
+            'edit' => Pages\EditChannel::route('/{record}/edit'),
         ];
     }
 }
