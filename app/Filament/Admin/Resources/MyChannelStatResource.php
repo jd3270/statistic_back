@@ -2,24 +2,21 @@
 
 namespace App\Filament\Admin\Resources;
 
-use App\Filament\Admin\Resources\ChannelStatResource\Pages;
 use App\Models\ChannelStat;
-use App\Models\Channel;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\DB;
+use App\Filament\Admin\Resources\MyChannelStatResource\Pages;
 
-class ChannelStatResource extends Resource
+class MyChannelStatResource extends Resource
 {
     protected static ?string $model = ChannelStat::class;
     protected static ?string $navigationGroup = 'Statistic';
     protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
-    protected static ?string $slug = 'channel-stats';
-
+    protected static ?string $slug = 'my-channel-stats';
     public static function getNavigationGroup(): ?string
     {
         return __('filament.navigation.statistic');
@@ -39,25 +36,17 @@ class ChannelStatResource extends Resource
     {
         $user = Auth::user();
 
-        // Define the base filters array
         $filters = [];
 
-        // Only show the channel filter for the Super Admin (user ID 1)
-        if ($user?->isSuperAdmin()) {
-            $filters[] = SelectFilter::make('channel_id')
-                ->label(__('filament.channel_stats.fields.channel'))
-                ->relationship('channel', 'name')
-                ->searchable()
-                ->preload();
-        }
+        // 普通用户也可以筛选自己的渠道
+        $filters[] = SelectFilter::make('channel_id')
+            ->label(__('filament.channel_stats.fields.channel'))
+            ->options(
+                $user->availableChannels()->pluck('name', 'id')
+            );
 
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')
-                    ->label(__('filament.channel_stats.fields.id'))
-                    ->sortable(),
-
-                // ✅ 显示频道名称（通过关联）
                 Tables\Columns\TextColumn::make('channel.name')
                     ->label(__('filament.channel_stats.fields.channel'))
                     ->sortable()
@@ -84,21 +73,24 @@ class ChannelStatResource extends Resource
             ->bulkActions([]);
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        $user = Auth::user();
+        return parent::getEloquentQuery()
+            ->whereIn('channel_id', $user->availableChannels()->pluck('id'));
+    }
+
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListChannelStats::route('/'),
+            'index' => Pages\ListMyChannelStats::route('/'),
         ];
-    }
-
-    public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery(); 
     }
 
     public static function canViewAny(): bool
     {
         $user = Auth::user();
-        return $user?->isSuperAdmin() ?? false;
+        return !$user?->isSuperAdmin() ?? false;
     }
+
 }

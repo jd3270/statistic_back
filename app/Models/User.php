@@ -12,10 +12,16 @@ use Filament\Models\Contracts\FilamentUser;
 class User extends Authenticatable implements FilamentUser
 {
     use HasFactory, Notifiable;
+
+    public const ROLE_SUPER_ADMIN = 1;
+    public const ROLE_ADMIN = 2;
+    public const ROLE_USER = 3;
+
     protected $fillable = [
         'name',
         'email',
         'password',
+        'role',
     ];
 
     protected $hidden = [
@@ -40,6 +46,16 @@ class User extends Authenticatable implements FilamentUser
             'user_id',
             'channel_id'
         );
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === self::ROLE_SUPER_ADMIN;
+    }
+
+    public function isAdmin(): bool
+    {
+        return in_array($this->role, [self::ROLE_SUPER_ADMIN, self::ROLE_ADMIN]);
     }
 
     // 获取普通用户可用渠道

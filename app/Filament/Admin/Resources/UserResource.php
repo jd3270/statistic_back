@@ -49,6 +49,15 @@ class UserResource extends Resource
                 ->label(__('filament.users.fields.password'))
                 ->password()
                 ->required(fn($livewire) => $livewire instanceof Pages\CreateUser),
+            Forms\Components\Select::make('role')
+                ->label(__('filament.users.fields.role'))
+                ->options([
+                    1 => __('filament.roles.super_admin'),
+                    2 => __('filament.roles.admin'),
+                    3 => __('filament.roles.user'),
+                ])
+                ->default(3) // 默认为普通用户
+                ->required(),
         ]);
     }
 
@@ -59,6 +68,7 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('id')->label(__('filament.users.fields.id'))->sortable(),
                 Tables\Columns\TextColumn::make('name')->label(__('filament.users.fields.name'))->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('email')->label(__('filament.users.fields.email'))->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('role') ->label('角色') ->formatStateUsing(fn($state) => match ($state) { 1 => __('filament.roles.super_admin'), 2 => __('filament.roles.admin'), 3 => __('filament.roles.user'), default => '未知角色', }),
                 Tables\Columns\TextColumn::make('created_at')->label(__('filament.users.fields.created_at'))->dateTime()->sortable(),
             ])
             ->filters([])
@@ -82,34 +92,34 @@ class UserResource extends Resource
         ];
     }
 
- public static function canViewAny(): bool
+    public static function canViewAny(): bool
     {
-        // 只有超级管理员可以看到 UserResource
         $user = Auth::user();
-        return $user && $user->id === 1;
+        return $user?->isSuperAdmin() ?? false;
     }
 
     public static function canView($record = null): bool
     {
         $user = Auth::user();
-        return $user && $user->id === 1;
+        return $user?->isSuperAdmin() ?? false;
     }
 
     public static function canCreate(): bool
     {
         $user = Auth::user();
-        return $user && $user->id === 1;
+        return $user?->isSuperAdmin() ?? false;
     }
 
     public static function canEdit($record): bool
     {
         $user = Auth::user();
-        return $user && $user->id === 1;
+        return $user?->isSuperAdmin() ?? false;
     }
 
     public static function canDelete($record): bool
     {
         $user = Auth::user();
-        return $user && $user->id === 1;
+        return $user?->isSuperAdmin() ?? false;
     }
+
 }

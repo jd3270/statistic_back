@@ -10,6 +10,7 @@ return [
             'email' => 'Email',
             'password' => 'Password',
             'created_at' => 'Created At',
+            'role' => 'Role',
         ],
         'actions' => [
             'edit' => 'Edit',
@@ -39,6 +40,7 @@ return [
             'edit' => 'Edit',
             'delete' => 'Delete',
             'refresh_key' => 'Generate new key',
+            'create' => 'New Channel',
         ],
         'filters' => [
             'status' => 'Active?',
@@ -76,5 +78,10 @@ return [
             'success' => 'Success',
             'failed' => 'Failed',
         ],
+    ],
+    'roles' => [
+        'super_admin' => 'Super Admin',
+        'admin' => 'Admin',
+        'user' => 'User',
     ],
 ];

@@ -44,15 +44,14 @@ class ChannelResource extends Resource
         $query = parent::getEloquentQuery();
         $user = Auth::user();
 
-        // 超级管理员直接返回全部
-        if ($user->id === 1) {
+        if ($user?->isSuperAdmin()) {
             return $query;
         }
 
         // 普通用户：使用 join 过滤
         return $query->join('statistic_back.channel_user as cu', 'channels.id', '=', 'cu.channel_id')
             ->where('cu.user_id', $user->id)
-            ->select('channels.*') // 必须指定，否则 join 会导致字段混乱
+            ->select('channels.*')
             ->distinct();
     }
 

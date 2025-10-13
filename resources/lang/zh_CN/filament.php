@@ -11,6 +11,7 @@ return [
             'email' => '邮箱',
             'password' => '密码',
             'created_at' => '创建时间',
+            'role' => '角色',
         ],
         'actions' => [
             'edit' => '编辑',
@@ -40,6 +41,7 @@ return [
             'edit' => '编辑',
             'delete' => '删除',
             'refresh_key' => '生成新密钥',
+            'create' => '新增渠道',
         ],
         'filters' => [
             'status' => '是否激活？',
@@ -77,5 +79,10 @@ return [
             'success' => '成功',
             'failed' => '失败',
         ],
+    ],
+    'roles' => [
+        'super_admin' => '超级管理员',
+        'admin' => '管理员',
+        'user' => '普通用户',
     ],
 ];
