@@ -13,15 +13,17 @@ class ListChannels extends ListRecords
 
     protected function getHeaderActions(): array
     {
+        // 获取当前登录用户
         $user = Auth::user();
 
-        if ($user?->isSuperAdmin()) {
-            return [
+        // ✅ 仅 SuperAdmin 可见「创建」按钮
+        return $user && $user->isSuperAdmin()
+            ? [
                 Actions\CreateAction::make()
-                    ->label(__('filament.channels.actions.create')),
-            ];
-        }
-
-        return [];
+                    ->label(__('filament.channels.actions.create'))
+                    ->icon('heroicon-o-plus-circle')
+                    ->color('success'),
+            ]
+            : [];
     }
 }

@@ -49,10 +49,12 @@ class ChannelResource extends Resource
         }
 
         // 普通用户：使用 join 过滤
-        return $query->join('statistic_back.channel_user as cu', 'channels.id', '=', 'cu.channel_id')
+        return $query
+            ->join('statistic_back.channel_user as cu', 'channels.id', '=', 'cu.channel_id')
             ->where('cu.user_id', $user->id)
             ->select('channels.*')
-            ->distinct();
+            ->distinct()
+            ->where('channels.id', '>', 0);
     }
 
     public static function form(Form $form): Form
@@ -89,6 +91,8 @@ class ChannelResource extends Resource
 
     public static function table(Table $table): Table
     {
+        $user = Auth::user();
+
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')
@@ -128,11 +132,24 @@ class ChannelResource extends Resource
                 Tables\Actions\EditAction::make()
                     ->label(__('filament.channels.actions.edit')),
                 Tables\Actions\DeleteAction::make()
-                    ->label(__('filament.channels.actions.delete')),
+                    ->label(__('filament.channels.actions.delete'))
+                    ->visible(fn() => $user?->isSuperAdmin()),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
+    }
+
+    public static function canCreate(): bool
+    {
+        $user = Auth::user();
+        return $user?->isSuperAdmin() ?? false;
+    }
+
+    public static function canDelete($record): bool
+    {
+        $user = Auth::user();
+        return $user?->isSuperAdmin() ?? false;
     }
 
     public static function getPages(): array
