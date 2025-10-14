@@ -74,8 +74,8 @@ class User extends Authenticatable implements FilamentUser
         if (app()->environment('local')) {
             return true;
         }
+        return in_array($this->role, [self::ROLE_SUPER_ADMIN, self::ROLE_ADMIN]);
 
-        return $panel->getId() === 'admin';
     }
 }
 
