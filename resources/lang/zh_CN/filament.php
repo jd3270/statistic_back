@@ -2,6 +2,7 @@
 
 
 return [
+    'brand_name' => '统计后台',
     'users' => [
         'navigation_label' => '用户管理',
         'plural_label' => '用户列表',

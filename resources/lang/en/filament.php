@@ -1,7 +1,9 @@
 <?php
 
 return [
+    'brand_name' => 'Statistic Panel',
     'users' => [
+        'brand_name' => 'Statistics Panel',
         'navigation_label' => 'Users',
         'plural_label' => 'User List',
         'fields' => [

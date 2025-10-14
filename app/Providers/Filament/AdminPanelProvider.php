@@ -25,6 +25,7 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->id('admin')
             ->path('admin')
+            ->brandName(fn() => __('filament.brand_name'))
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -38,7 +39,7 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
-                \App\Filament\Admin\Widgets\LanguageSwitch::class, 
+                \App\Filament\Admin\Widgets\LanguageSwitch::class,
             ])
             ->middleware([
                 EncryptCookies::class,

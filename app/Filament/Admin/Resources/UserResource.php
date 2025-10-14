@@ -11,6 +11,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
+use Filament\Actions;
 
 class UserResource extends Resource
 {
@@ -68,12 +69,19 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('id')->label(__('filament.users.fields.id'))->sortable(),
                 Tables\Columns\TextColumn::make('name')->label(__('filament.users.fields.name'))->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('email')->label(__('filament.users.fields.email'))->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('role') ->label('角色') ->formatStateUsing(fn($state) => match ($state) { 1 => __('filament.roles.super_admin'), 2 => __('filament.roles.admin'), 3 => __('filament.roles.user'), default => '未知角色', }),
+                Tables\Columns\TextColumn::make('role')->label('角色')->formatStateUsing(fn($state) => match ($state) { 1 => __('filament.roles.super_admin'), 2 => __('filament.roles.admin'), 3 => __('filament.roles.user'), default => '未知角色', }),
                 Tables\Columns\TextColumn::make('created_at')->label(__('filament.users.fields.created_at'))->dateTime()->sortable(),
             ])
             ->filters([])
-            ->actions([])
-            ->bulkActions([]);
+            ->actions([
+                Tables\Actions\EditAction::make()
+                    ->visible(fn() => auth()->user()?->isSuperAdmin() ?? false),
+            ])
+            ->bulkActions([])
+            ->headerActions([
+                Tables\Actions\CreateAction::make()
+                    ->visible(fn() => auth()->user()?->isSuperAdmin() ?? false),
+            ]);
     }
 
     public static function getPages(): array
@@ -107,7 +115,7 @@ class UserResource extends Resource
     public static function canCreate(): bool
     {
         $user = Auth::user();
-        return $user?->isSuperAdmin() ?? false;
+        return $user?->isSuperAdmin() ?? true;
     }
 
     public static function canEdit($record): bool
