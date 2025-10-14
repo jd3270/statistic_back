@@ -49,12 +49,11 @@ class ChannelResource extends Resource
         }
 
         // 普通用户：使用 join 过滤
-        return $query
-            ->join('statistic_back.channel_user as cu', 'channels.id', '=', 'cu.channel_id')
-            ->where('cu.user_id', $user->id)
-            ->select('channels.*')
-            ->distinct()
-            ->where('channels.id', '>', 0);
+        return $query->whereIn('id', function ($sub) use ($user) {
+            $sub->select('channel_id')
+                ->from('statistic_back.channel_user')
+                ->where('user_id', $user->id);
+        });
     }
 
     public static function form(Form $form): Form
