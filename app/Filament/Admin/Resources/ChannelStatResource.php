@@ -40,9 +40,12 @@ class ChannelStatResource extends Resource
         return $form->schema([
             Forms\Components\Grid::make(2)
                 ->schema([
-                    Forms\Components\TextInput::make('channel.name')
+                    Forms\Components\TextInput::make('channel_name')
                         ->label(__('filament.channel_stats.fields.channel'))
-                        ->disabled(),
+                        ->disabled()
+                        ->afterStateHydrated(function ($component, $state, $record) {
+                            $component->state($record->channel?->name ?? '');
+                        }),
 
                     Forms\Components\DatePicker::make('stat_date')
                         ->label(__('filament.channel_stats.fields.stat_date'))
@@ -80,9 +83,6 @@ class ChannelStatResource extends Resource
                         ->label(__('filament.channel_stats.fields.login_count'))
                         ->disabled(),
 
-                    Forms\Components\DateTimePicker::make('updated_at')
-                        ->label(__('filament.channel_stats.fields.updated_at'))
-                        ->disabled(),
                 ]),
         ]);
     }
