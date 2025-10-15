@@ -1,4 +1,4 @@
-<div class="flex space-x-2 p-2">
+<div class="flex space-x-2 p-2 gap-2">
     @php
         $current = session('locale', config('app.locale'));
     @endphp
