@@ -63,6 +63,9 @@ return [
             'success_recharge_amount' => 'Recharge (Success)',
             'register_count' => 'Registrations',
             'created_at' => 'Created At',
+            'recharge_count' => 'Recharge Count',
+            'success_recharge_count' => 'Successful Recharge Count',
+            'login_count' => 'Login Count',
         ],
     ],
     'recharge_logs' => [

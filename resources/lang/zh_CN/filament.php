@@ -63,6 +63,9 @@ return [
             'success_recharge_amount' => '充值成功',
             'register_count' => '注册量',
             'created_at' => '创建时间',
+            'recharge_count' => '充值次数',
+            'success_recharge_count' => '成功充值次数',
+            'login_count' => '登录次数',
         ],
     ],
     'recharge_logs' => [

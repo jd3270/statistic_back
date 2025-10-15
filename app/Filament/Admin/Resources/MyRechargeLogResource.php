@@ -40,10 +40,17 @@ class MyRechargeLogResource extends Resource
             SelectFilter::make('status')
                 ->label(__('filament.recharge_logs.fields.status'))
                 ->options([
-                    0 => __('filament.recharge_logs.status_labels.pending'),
                     1 => __('filament.recharge_logs.status_labels.success'),
+                    0 => __('filament.recharge_logs.status_labels.pending'),
                     2 => __('filament.recharge_logs.status_labels.failed'),
-                ]),
+                ])
+                ->placeholder('') // 不显示 "All"
+                ->default(1)
+                ->query(function ($query, $state) {
+                    // 用户选择状态时使用选择的状态，否则默认 1
+                    $status = $state ?? 1;
+                    $query->where('status', $status);
+                })
         ];
 
         // 普通用户可筛选自己关联的渠道
