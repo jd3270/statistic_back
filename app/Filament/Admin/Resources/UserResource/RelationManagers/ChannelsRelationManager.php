@@ -7,6 +7,7 @@ use Filament\Forms;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Actions\AttachAction;
+use Illuminate\Support\Facades\DB;
 
 class ChannelsRelationManager extends RelationManager
 {
@@ -54,25 +55,37 @@ class ChannelsRelationManager extends RelationManager
                     ->form([
                         Forms\Components\Select::make('channel_id')
                             ->label(__('filament.channels.fields.name'))
+                            ->searchable()
                             ->options(function () {
-                                // 当前 User
-                                $user = $this->ownerRecord;
+                                // 取出所有已被使用的 channel_id
+                                $usedIds = DB::table('channel_user')->pluck('channel_id')->toArray();
 
-                                // 获取当前用户已关联的 channel_id
-                                $usedIds = $user->channels()->pluck('channels.id')->toArray();
-
-                                // 返回未关联的 channels
+                                // 显示前 20 个未使用的频道
                                 return Channel::query()
                                     ->whereNotIn('id', $usedIds)
+                                    ->orderBy('id')
+                                    ->limit(20)
                                     ->pluck('name', 'id')
                                     ->toArray();
                             })
+                            ->getSearchResultsUsing(function (string $search) {
+                                $usedIds = DB::table('channel_user')->pluck('channel_id')->toArray();
+
+                                return Channel::query()
+                                    ->whereNotIn('id', $usedIds)
+                                    ->where('name', 'like', "%{$search}%")
+                                    ->orderBy('id')
+                                    ->limit(20)
+                                    ->pluck('name', 'id')
+                                    ->toArray();
+                            })
+                            ->getOptionLabelUsing(fn($value) => Channel::find($value)?->name)
+                            ->placeholder(__('filament.users.placeholders.select_channel'))
                             ->required(),
                     ])
                     ->action(function ($record, array $data) {
-                        // $this->ownerRecord 是当前用户
                         $this->ownerRecord->channels()->attach($data['channel_id']);
-                    }),
+                    })
             ])
             ->actions([
                 Tables\Actions\DetachAction::make(), // 允许 detach

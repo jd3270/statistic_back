@@ -19,8 +19,10 @@ return [
             'delete' => 'Delete',
             'attach_channel' => 'Attach Channel',
         ],
+        'placeholders' => [
+            'select_channel' => 'Select or search available channel',
+        ],
         'filters' => [
-            // Custom filters if needed
         ],
     ],
     'navigation' => [

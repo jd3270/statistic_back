@@ -17,10 +17,12 @@ return [
         'actions' => [
             'edit' => '编辑',
             'delete' => '删除',
-            'attach_channel' => '添加渠道',
+            'attach_channel' => '关联频道',
+        ],
+        'placeholders' => [
+            'select_channel' => '请选择或搜索可用频道',
         ],
         'filters' => [
-            // 可以自定义筛选字段
         ],
     ],
     'navigation' => [
