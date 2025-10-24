@@ -69,6 +69,10 @@ return [
             'success_recharge_count' => '成功充值次数',
             'login_count' => '登录次数',
         ],
+        'filters' => [
+            'start_date' => '开始日期',
+            'end_date' => '结束日期',
+        ],
     ],
     'recharge_logs' => [
         'navigation_label' => '充值记录',

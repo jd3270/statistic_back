@@ -69,6 +69,10 @@ return [
             'success_recharge_count' => 'Successful Recharge Count',
             'login_count' => 'Login Count',
         ],
+        'filters' => [
+            'start_date' => 'Start Date',
+            'end_date' => 'End Date',
+        ],
     ],
     'recharge_logs' => [
         'navigation_label' => 'Recharge Logs',

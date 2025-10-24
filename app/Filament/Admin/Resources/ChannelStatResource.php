@@ -91,10 +91,37 @@ class ChannelStatResource extends Resource
     {
         $user = Auth::user();
 
-        $filters = [];
+        // ===== 筛选器 =====
+        $filters = [
+            // 📅 日期区间筛选器
+            Tables\Filters\Filter::make('stat_date')
+                ->label(__('filament.channel_stats.fields.stat_date'))
+                ->form([
+                    Forms\Components\DatePicker::make('start_date')
+                        ->label(__('filament.channel_stats.filters.start_date'))
+                        ->default(now()->subDays(7)), 
+                    Forms\Components\DatePicker::make('end_date')
+                        ->label(__('filament.channel_stats.filters.end_date'))
+                        ->default(now()),
+                ])
+                ->query(function (Builder $query, array $data): Builder {
+                    $start = $data['start_date'] ?? null;
+                    $end = $data['end_date'] ?? null;
+
+                    return $query
+                        ->when($start, fn($q) => $q->whereDate('stat_date', '>=', $start))
+                        ->when($end, fn($q) => $q->whereDate('stat_date', '<=', $end));
+                })
+                ->indicateUsing(function (array $data): ?string {
+                    if (!empty($data['start_date']) && !empty($data['end_date'])) {
+                        return '📅 ' . $data['start_date'] . ' → ' . $data['end_date'];
+                    }
+                    return null;
+                }),
+        ];
 
         if ($user?->isSuperAdmin()) {
-            $filters[] = SelectFilter::make('channel_id')
+            $filters[] = Tables\Filters\SelectFilter::make('channel_id')
                 ->label(__('filament.channel_stats.fields.channel'))
                 ->relationship('channel', 'name')
                 ->searchable()
@@ -134,8 +161,7 @@ class ChannelStatResource extends Resource
             ])
             ->filters($filters)
             ->actions([
-                Tables\Actions\ViewAction::make()
-                    ->slideOver(), // ✅ 使用 slideOver 查看详情
+                Tables\Actions\ViewAction::make()->slideOver(),
             ])
             ->bulkActions([])
             ->defaultSort('id', 'desc');

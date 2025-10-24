@@ -9,6 +9,8 @@ use Filament\Forms\Form;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\Filter;
+use Filament\Forms\Components\DatePicker;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Admin\Resources\MyChannelStatResource\Pages;
@@ -85,16 +87,34 @@ class MyChannelStatResource extends Resource
                 ]),
         ]);
     }
+
     public static function table(Table $table): Table
     {
         $user = Auth::user();
 
+        // ===== 筛选器 =====
         $filters = [
+            // 日期区间筛选器
+            Filter::make('stat_date')
+                ->label(__('filament.channel_stats.fields.stat_date'))
+                ->form([
+                    DatePicker::make('start_date')
+                        ->label(__('filament.channel_stats.filters.start_date'))
+                        ->default(now()->subDays(7)),
+                    DatePicker::make('end_date')
+                        ->label(__('filament.channel_stats.filters.end_date'))
+                        ->default(now()),
+                ])
+                ->query(function (Builder $query, array $data): Builder {
+                    return $query
+                        ->when($data['start_date'], fn($q) => $q->whereDate('stat_date', '>=', $data['start_date']))
+                        ->when($data['end_date'], fn($q) => $q->whereDate('stat_date', '<=', $data['end_date']));
+                }),
+
+            // 用户可选频道
             SelectFilter::make('channel_id')
                 ->label(__('filament.channel_stats.fields.channel'))
-                ->options(
-                    $user->availableChannels()->pluck('name', 'id')
-                )
+                ->options($user->availableChannels()->pluck('name', 'id'))
                 ->searchable()
                 ->preload(),
         ];
@@ -128,11 +148,10 @@ class MyChannelStatResource extends Resource
             ])
             ->filters($filters)
             ->actions([
-                Tables\Actions\ViewAction::make()
-                    ->slideOver(), // ✅ slideOver 查看详情
+                Tables\Actions\ViewAction::make()->slideOver(),
             ])
             ->bulkActions([])
-            ->defaultSort('id', 'desc'); // ✅ 默认倒序
+            ->defaultSort('id', 'desc');
     }
 
     public static function getEloquentQuery(): Builder
